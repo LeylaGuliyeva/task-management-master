@@ -1,7 +1,7 @@
 package com.task.management.api.service.impl;
 
 import com.task.management.api.service.EmailService;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -75,4 +75,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 }
+
+
 

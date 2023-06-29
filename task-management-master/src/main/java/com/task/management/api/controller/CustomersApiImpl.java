@@ -4,6 +4,7 @@ import com.task.management.api.adapter.WebAdapter;
 import com.task.management.api.dto.CustomerRequest;
 import com.task.management.api.dto.CustomerResponse;
 import com.task.management.api.dto.LoginRequest;
+import com.task.management.api.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CustomersApiImpl implements CustomersApi {
     private final WebAdapter adapter;
+    private final CustomerService service;
 
     @Override
     public ResponseEntity<CustomerResponse> signUp(CustomerRequest requestModel) {
-        return ResponseEntity.ok(null); // call adapter.map() methods to convert
-        // requestModel to Entity, then from Entity to Response
+        return ResponseEntity.ok(adapter.map(service.createCustomer(adapter.map(requestModel))));
     }
 
     @Override
     public ResponseEntity<String> login(LoginRequest requestModel) {
-        return ResponseEntity.ok("Hello");
+        return ResponseEntity.ok(service.customerExistsByLoginForm(requestModel));
     }
 }

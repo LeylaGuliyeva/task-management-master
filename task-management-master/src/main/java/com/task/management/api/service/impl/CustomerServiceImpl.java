@@ -1,29 +1,27 @@
 package com.task.management.api.service.impl;
 
-import com.task.management.api.dto.CustomerRegistrationDto;
-import com.task.management.api.mapper.CustomerMapper;
-import com.task.management.api.models.Customer;
+import com.task.management.api.dto.LoginRequest;
+import com.task.management.api.entity.Customer;
 import com.task.management.api.repository.CustomerRepository;
-import com.task.management.api.service.EmailService;
 import com.task.management.api.service.CustomerService;
+import com.task.management.api.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class CustomerServiceImpl implements CustomerService {
-    private final UserMapper userMapper;
-    private final CustomerRepository customerRepo;
+    private final CustomerRepository customerRepository;
     private final EmailService emailService;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Customer createCustomer(CustomerRegistrationDto customerRegistrationDto) {
-        Customer customer = dtoToEntity(customerRegistrationDto);
+    public Customer createCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
 
@@ -33,12 +31,17 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public String getCustomerName(Customer customer) {
-        return customer.getName().concat(" ").concat(customer.getSurname());
+    public String customerExistsByLoginForm(LoginRequest requestModel) {
+        Optional<Customer> customer = customerRepository.findByEmail(requestModel.getEmail());
+
+        return customer.isPresent() && customer.get().getPassword().equals(requestModel.getPassword())
+                ? "Successfully logged in"
+                : "Check your input data";
     }
 
-    private Customer dtoToEntity(CustomerRegistrationDto customerRegistrationDto) {
-        return customerMapper.CustomerFormToCustomer(customerRegistrationDto);
+    @Override
+    public String getCustomerName(Customer customer) {
+        return customer.getName().concat(" ").concat(customer.getSurname());
     }
 
     @Override
@@ -53,8 +56,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
     private void resetPassword(String email, String newPassword) {
         var customer = customerRepository.findByEmail(email).get();
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        customer.setPassword(encodedPassword);
+//        String encodedPassword = passwordEncoder.encode(newPassword);
+        customer.setPassword(newPassword);
         customerRepository.save(customer);
     }
 }

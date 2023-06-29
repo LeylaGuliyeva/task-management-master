@@ -55,24 +55,6 @@ public interface TaskApi {
                                             @Valid @RequestBody  TaskRequest requestModel);
 
 
-    @Operation(summary = "Update task's fields by its id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    content = {
-                            @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = TaskResponse.class))
-                    })
-    })
-    @RequestMapping(
-            value = {"/{id}"},
-            produces = {"application/json"},
-            consumes = {"application/json"},
-            method = {RequestMethod.PATCH}
-    )
-    ResponseEntity<TaskResponse> updateTaskFields(@PathVariable("id") Long taskId,
-                                                  @Valid @RequestBody  TaskRequest requestModel);
-
-
     @Operation(summary = "Delete task by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully deleted",
@@ -87,7 +69,7 @@ public interface TaskApi {
             consumes = {"application/json"},
             method = {RequestMethod.DELETE}
     )
-    ResponseEntity<String> deleteTask(@PathVariable("id") Long taskId);
+    ResponseEntity<?> deleteTask(@PathVariable("id") Long taskId);
 
     @Operation(summary = "Find Task by criteria")
     @ApiResponses(value = {
